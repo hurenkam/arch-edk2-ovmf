@@ -7,7 +7,7 @@ pkgbase=edk2
 pkgname=(edk2-arm edk2-aarch64 edk2-shell edk2-ovmf)
 pkgver=202308
 _commit=819cfc6b42a68790a23509e4fcc58ceb70e1965e  # refs/tags/edk2-stable202308
-pkgrel=1
+pkgrel=2
 pkgdesc="Modern, feature-rich firmware development environment for the UEFI specifications"
 arch=(any)
 url="https://github.com/tianocore/edk2"
@@ -17,7 +17,6 @@ makedepends=(
   arm-none-eabi-gcc
   acpica
   git
-  iasl
   util-linux-libs
   nasm
   python
