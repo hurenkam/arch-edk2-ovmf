@@ -179,15 +179,13 @@ build() {
   # shared targets x86_64 and i686
   local _x86_args=(
     -D FD_SIZE_2MB
-    -D HTTP_BOOT_ENABLE
-    -D TLS_ENABLE
   )
   # 4MB FD size variant
   local _4mb_args=(
     -D FD_SIZE_4MB
     -D FD_SIZE_IN_KB=4096
-    -D HTTP_BOOT_ENABLE
-    -D TLS_ENABLE
+    -D NETWORK_HTTP_BOOT_ENABLE
+    -D NETWORK_TLS_ENABLE
   )
 
   cd $pkgbase
