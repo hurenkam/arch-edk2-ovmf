@@ -195,47 +195,73 @@ build() {
   for _arch in ${_arch_list[@]}; do
     # shell
     echo "Building shell ($_arch)."
-    BaseTools/BinWrappers/PosixLike/build -p ShellPkg/ShellPkg.dsc -a "$_arch" "${_common_args[@]}"
+    _build_options=(
+      -p ShellPkg/ShellPkg.dsc
+      -a "$_arch"
+      "${_common_args[@]}"
+    )
+    BaseTools/BinWrappers/PosixLike/build "${_build_options[@]}"
+
     # ovmf
     case "$_arch" in
       IA32)
       echo "Building ovmf ($_arch) with secure boot support (4MB FD)"
-      BaseTools/BinWrappers/PosixLike/build -p OvmfPkg/OvmfPkgIa32.dsc \
-                       -a "$_arch" \
-                       "${_common_args[@]}" \
-                       "${_efi_args[@]}" \
-                       -D LOAD_X64_ON_IA32_ENABLE \
-                       -D SECURE_BOOT_ENABLE \
-                       -D SMM_REQUIRE
+      _build_options=(
+        -p OvmfPkg/OvmfPkgIa32.dsc
+        -a "$_arch"
+        "${_common_args[@]}"
+        "${_efi_args[@]}"
+        -D LOAD_X64_ON_IA32_ENABLE
+        -D SECURE_BOOT_ENABLE
+        -D SMM_REQUIRE
+      )
+      BaseTools/BinWrappers/PosixLike/build "${_build_options[@]}"
       mv -v Build/Ovmf{Ia32,IA32-secure-4mb}
+
       echo "Building ovmf ($_arch) default (4MB FD)"
-      BaseTools/BinWrappers/PosixLike/build -p OvmfPkg/OvmfPkgIa32.dsc \
-                       -a "$_arch" \
-                       "${_common_args[@]}" \
-                       "${_efi_args[@]}" \
-                       -D LOAD_X64_ON_IA32_ENABLE
+      _build_options=(
+        -p OvmfPkg/OvmfPkgIa32.dsc
+        -a "$_arch"
+        "${_common_args[@]}"
+        "${_efi_args[@]}"
+        -D LOAD_X64_ON_IA32_ENABLE
+      )
+      BaseTools/BinWrappers/PosixLike/build "${_build_options[@]}"
       mv -v Build/Ovmf{Ia32,IA32-4mb}
+
       ;;
       X64)
       echo "Building ovmf ($_arch) with microvm support (4MB FD)"
-      BaseTools/BinWrappers/PosixLike/build -p OvmfPkg/Microvm/Microvm$_arch.dsc \
-                       -a "$_arch" \
-                       "${_common_args[@]}" \
-                       "${_efi_args[@]}"
+      _build_options=(
+        -p OvmfPkg/Microvm/Microvm$_arch.dsc
+        -a "$_arch"
+        "${_common_args[@]}"
+        "${_efi_args[@]}"
+      )
+      BaseTools/BinWrappers/PosixLike/build "${_build_options[@]}"
       mv -v Build/MicrovmX64{,-4mb}
+
       echo "Building ovmf ($_arch) with secure boot support (4MB FD)"
-      BaseTools/BinWrappers/PosixLike/build -p OvmfPkg/OvmfPkgIa32X64.dsc \
-                       -a IA32 -a "$_arch" \
-                       "${_common_args[@]}" \
-                       "${_efi_args[@]}" \
-                       -D SECURE_BOOT_ENABLE \
-                       -D SMM_REQUIRE
+      _build_options=(
+        -p OvmfPkg/OvmfPkgIa32X64.dsc
+        -a IA32
+        -a "$_arch"
+        "${_common_args[@]}"
+        "${_efi_args[@]}"
+        -D SECURE_BOOT_ENABLE
+        -D SMM_REQUIRE
+      )
+      BaseTools/BinWrappers/PosixLike/build "${_build_options[@]}"
       mv -v Build/Ovmf3264{,-secure-4mb}
+
       echo "Building ovmf (${_arch}) without secure boot (4MB FD)"
-      BaseTools/BinWrappers/PosixLike/build -p OvmfPkg/OvmfPkg$_arch.dsc \
-                       -a "$_arch" \
-                       "${_common_args[@]}" \
-                       "${_efi_args[@]}"
+      _build_options=(
+        -p OvmfPkg/OvmfPkg$_arch.dsc
+        -a "$_arch"
+        "${_common_args[@]}"
+        "${_efi_args[@]}"
+      )
+      BaseTools/BinWrappers/PosixLike/build "${_build_options[@]}"
       mv -v Build/OvmfX64{,-4mb}
       ;;
       AARCH64)
