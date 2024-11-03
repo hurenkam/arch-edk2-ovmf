@@ -166,19 +166,16 @@ build() {
     -n "$(nproc)"
     -t "$_build_plugin"
   )
-  # shared targets for all EFI binaries
+  # shared options for all EFI binaries
   local _efi_args=(
+    -D FD_SIZE_4MB
+    -D NETWORK_HTTP_BOOT_ENABLE
     -D NETWORK_IP6_ENABLE
+    -D NETWORK_TLS_ENABLE
     -D TPM_CONFIG_ENABLE
+    -D TPM_ENABLE
     -D TPM1_ENABLE
     -D TPM2_ENABLE
-  )
-  # 4MB FD size variant
-  local _4mb_args=(
-    -D FD_SIZE_4MB
-    -D FD_SIZE_IN_KB=4096
-    -D NETWORK_HTTP_BOOT_ENABLE
-    -D NETWORK_TLS_ENABLE
   )
 
   cd $pkgbase
@@ -207,8 +204,6 @@ build() {
                        -a "$_arch" \
                        "${_common_args[@]}" \
                        "${_efi_args[@]}" \
-                       "${_4mb_args[@]}" \
-                       -D EXCLUDE_SHELL_FROM_FD \
                        -D LOAD_X64_ON_IA32_ENABLE \
                        -D SECURE_BOOT_ENABLE \
                        -D SMM_REQUIRE
@@ -218,7 +213,6 @@ build() {
                        -a "$_arch" \
                        "${_common_args[@]}" \
                        "${_efi_args[@]}" \
-                       "${_4mb_args[@]}" \
                        -D LOAD_X64_ON_IA32_ENABLE
       mv -v Build/Ovmf{Ia32,IA32-4mb}
       ;;
@@ -227,25 +221,21 @@ build() {
       BaseTools/BinWrappers/PosixLike/build -p OvmfPkg/Microvm/Microvm$_arch.dsc \
                        -a "$_arch" \
                        "${_common_args[@]}" \
-                       "${_efi_args[@]}" \
-                       "${_4mb_args[@]}"
+                       "${_efi_args[@]}"
       mv -v Build/MicrovmX64{,-4mb}
       echo "Building ovmf ($_arch) with secure boot support (4MB FD)"
       BaseTools/BinWrappers/PosixLike/build -p OvmfPkg/OvmfPkgIa32X64.dsc \
                        -a IA32 -a "$_arch" \
                        "${_common_args[@]}" \
                        "${_efi_args[@]}" \
-                       "${_4mb_args[@]}" \
                        -D SECURE_BOOT_ENABLE \
-                       -D SMM_REQUIRE \
-                       -D EXCLUDE_SHELL_FROM_FD
+                       -D SMM_REQUIRE
       mv -v Build/Ovmf3264{,-secure-4mb}
       echo "Building ovmf (${_arch}) without secure boot (4MB FD)"
       BaseTools/BinWrappers/PosixLike/build -p OvmfPkg/OvmfPkg$_arch.dsc \
                        -a "$_arch" \
                        "${_common_args[@]}" \
-                       "${_efi_args[@]}" \
-                       "${_4mb_args[@]}"
+                       "${_efi_args[@]}"
       mv -v Build/OvmfX64{,-4mb}
       ;;
       AARCH64)
@@ -255,8 +245,6 @@ build() {
         -a "$_arch"
         "${_common_args[@]}"
         "${_efi_args[@]}"
-        -D NETWORK_HTTP_BOOT_ENABLE
-        -D NETWORK_TLS_ENABLE
         -D SECURE_BOOT_ENABLE
       )
       BaseTools/BinWrappers/PosixLike/build "${_build_options[@]}"
@@ -271,11 +259,7 @@ build() {
         -a "${_arch}"
         "${_common_args[@]}"
         "${_efi_args[@]}"
-        -D NETWORK_HTTP_BOOT_ENABLE
-        -D NETWORK_TLS_ENABLE
         -D SECURE_BOOT_ENABLE
-        -D TPM_ENABLE
-        -D TPM_CONFIG_ENABLE
       )
       BaseTools/BinWrappers/PosixLike/build "${_build_options[@]}"
       dd if=/dev/zero of=Build/ArmVirtQemu-$_arch/${_build_type}_$_build_plugin/FV/QEMU_CODE.fd bs=1M count=64
