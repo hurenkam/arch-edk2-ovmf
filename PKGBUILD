@@ -1,12 +1,9 @@
 # Maintainer: David Runge <dvzrv@archlinux.org>
 # Contributor: Alexander Epaneshnikov <alex19ep@archlinux.org>
 
-_brotli_ver=1.0.9
-_openssl_ver=3.0.9
 pkgbase=edk2
 pkgname=(edk2-arm edk2-aarch64 edk2-shell edk2-ovmf)
 pkgver=202311
-_commit=8736b8fdca85e02933cdb0a13309de14c9799ece  # refs/tags/edk2-stable202311
 pkgrel=1
 pkgdesc="Modern, feature-rich firmware development environment for the UEFI specifications"
 arch=(any)
@@ -28,10 +25,24 @@ makedepends=(
 )
 options=(!makeflags)
 source=(
-  git+$url#tag=$_commit
-  $pkgbase-softfloat::git+https://github.com/ucb-bar/berkeley-softfloat-3.git
-  https://www.openssl.org/source/openssl-$_openssl_ver.tar.gz{,.asc}
-  https://github.com/google/brotli/archive/v$_brotli_ver/brotli-$_brotli_ver.tar.gz
+  git+$url#tag=$pkgbase-stable$pkgver
+  openssl::git+https://github.com/openssl/openssl.git
+  pyca-cryptography::git+https://github.com/pyca/cryptography.git  # submodule for openssl
+  krb5::git+https://github.com/krb5/krb5.git  # submodule for openssl
+  gost-engine::git+https://github.com/gost-engine/engine.git  # submodule for openssl
+  libprov::git+https://github.com/provider-corner/libprov.git  # submodule for gost-engine
+  wycheproof::git+https://github.com/google/wycheproof.git  # submodule for openssl
+  berkeley-softfloat-3::git+https://github.com/ucb-bar/berkeley-softfloat-3.git
+  $pkgbase-cmocka::git+https://github.com/tianocore/edk2-cmocka.git
+  oniguruma::git+https://github.com/kkos/oniguruma.git
+  brotli::git+https://github.com/google/brotli.git
+  jansson::git+https://github.com/akheron/jansson.git
+  googletest::git+https://github.com/google/googletest.git  # also a submodule for public-mipi-sys-t
+  # subhook::git+https://github.com/Zeex/subhook.git
+  pylibfdt::git+https://github.com/devicetree-org/pylibfdt.git
+  public-mipi-sys-t::git+https://github.com/MIPI-Alliance/public-mipi-sys-t.git
+  pugixml::git+https://github.com/zeux/pugixml.git  # submodule for public-mipi-sys-t
+  mbedtls::git+https://github.com/Mbed-TLS/mbedtls.git
   50-edk2-ovmf-i386-secure.json
   50-edk2-ovmf-i386-secure-4m.json
   50-edk2-ovmf-x86_64-secure.json
@@ -54,13 +65,24 @@ source=(
   81-edk2-ovmf-ia32-on-x86_64-4m.json
   82-edk2-ovmf-ia32-on-x86_64-csm.json
   82-edk2-ovmf-ia32-on-x86_64-csm-4m.json
-  $pkgbase-202202-brotli.patch
 )
-sha512sums=('SKIP'
+sha512sums=('3702666f06f8367de6174bc9646726d1c6e405ffa68e24a5eab9c5d1e9b8a74ad3cecb691ce1702729957935cbc71abd7fd75d833a2f57981996256c843152ba'
             'SKIP'
-            '86c99146b37236419b110db77dd3ac3992e6bed78c258f0cc3434ca233460b4e17c0ac81d7058547fe9cb72a9fd80ee56d4b4916bb731dbe2bbcf1c3d46bf31a'
             'SKIP'
-            'b8e2df955e8796ac1f022eb4ebad29532cb7e3aa6a4b6aee91dbd2c7d637eee84d9a144d3e878895bb5e62800875c2c01c8f737a1261020c54feacf9f676b5f5'
+            'SKIP'
+            'SKIP'
+            'SKIP'
+            'SKIP'
+            'SKIP'
+            'SKIP'
+            'SKIP'
+            'SKIP'
+            'SKIP'
+            'SKIP'
+            'SKIP'
+            'SKIP'
+            'SKIP'
+            'SKIP'
             '9182615c6f89e4f3c19f1b0f4434aa0a3293f982cf3ed783a2c140c2555d824b417c7c3c7a00ad10616188507f5068226c720b20ffd41d44449605ba0844bad2'
             '53604279dea69000cb036062d9617f1c7dc5ce3d83fbcb066b9087e4f412c2ea24ae3a37436ab17d5bf9dd6b2da380933c48400163d4b9fde65ea42d37956d5e'
             'e2e5f3eabb3ced681385ed9d57a3aa83e2155415ea6fd2c16eb15c5a1e685f92e90f1c6f270c1c8da23dde3a0e4a085399f65038b799430c713d1628eb44ac07'
@@ -82,13 +104,24 @@ sha512sums=('SKIP'
             '8ed6d1d749c3471421a02c41e0e8c3e1ceb62ca6bc09cf2bc85055e2b2661bc149a77b83f480af1aec2f9a948971c6b5aebc92fbc112508fc6293cc6edc7a8a7'
             'c9dbe7b2b6b8c18b7b8fdfef5bc329d9142c442f2f3dbae3ca4919255dcaf2ab576cd305648228d5dd48040ca3b14f44ee33b05cb6ca13b49e2836947b78ea53'
             '692e5bdefb61ae7b8d6e2063f163e2b68136b2522d606806766186f10c5fae1f7583fd83cda52c235d0d8eb0651e5a711f505021a8d8d949d8dccfce7f0c82ac'
-            'c699ad500f24569643a4581f4bb5be0e4a90d160f0b3ae7728cf8e27b39665983b80439ca7b853b1bd9a174c8c123cbaf7ed3cd4a17d6460f4fec670c62a1183'
-            'd074c794796d17d77eed7c34201d93d7ef3f1322fe1ea4a2ddd7137fae884d49f94f465ee39cfd8346b026142668a41f5a8671e521409505dd6d002f71c0eebc')
-b2sums=('SKIP'
+            'c699ad500f24569643a4581f4bb5be0e4a90d160f0b3ae7728cf8e27b39665983b80439ca7b853b1bd9a174c8c123cbaf7ed3cd4a17d6460f4fec670c62a1183')
+b2sums=('42410a203b7ab4b6b272a1a25675dafd18640972e8a319b01a53d5aeeebabfbeb331bd0afda4b4078305f85b0fb2a4cb7256a45cd6f1df64a3f63ee6b5bc9b13'
         'SKIP'
-        'cc1df41fa12ba4443e15e94f6ebdc5e103b9dab5eab2e1c8f74e6a74fa2c38207817921b65d7293cb241c190a910191c7163600bb75243adde0e2f9ec31cc885'
         'SKIP'
-        '8b9939d5224396ef33b43e019250ba4bc8949903583615e8dc02c85340fc0a1e2d1632161e00b0ee7355d77f05529ac772f482e05d2089afd71a0bf71e803904'
+        'SKIP'
+        'SKIP'
+        'SKIP'
+        'SKIP'
+        'SKIP'
+        'SKIP'
+        'SKIP'
+        'SKIP'
+        'SKIP'
+        'SKIP'
+        'SKIP'
+        'SKIP'
+        'SKIP'
+        'SKIP'
         '98742b83c2d605772a1bfa64ee434430413516db13d80235f0bc0be3a0e930aa17d737a6d2c95ce3d60f33de9f93679e09f421632d9e3fc9575d662fcf198f4b'
         'ee28940a8d13a7badf94bcceebd4371c79cd0194ca9f984f39cd75ee64f1ba53059d81f5826c6b5a564d50dce7b9fb5fe8d63ee8d38d38462bc070249124a16b'
         '8dfd44f35d35d699bb12eef771b08b978cf38ba64494b0eb8c153c72493d47c2d71445869c8d9115c29b28cd206f31be27b43024bd8796a50c8c41a67f87a859'
@@ -110,47 +143,54 @@ b2sums=('SKIP'
         'dc9a98b8b6d6d8cc2f3aa2b314ba521a2fa8110abf199ca2a6c612ba53df3adad89e5ae0e4cfbe8f5ebf2cefd3cda1716d19f90304a138630f0b8d6e36cd4d10'
         '0c1e145109de9a25339633b563e47f6c09ea314f636023d09a58559a499dd0bd283a45e050fc99fe34c4d712bd00a035064fa8406734d57029c67b9adb4b11ce'
         '0ad956e3e662909abafd0b9a2b7ef12e35a8832183cb41e17dcafaa4f5db1e47ef20b3040268644daebb24f66c18b99de07f41e7d62089691c07de688a08f05a'
-        'a44b5ffc35d78925ac7362ec2cf75475d02e05ed0b9e8771c909d090187aaff7436e8d856d58b8a56827990006b813c63318b60a8a7780844c829a2b13a502cf'
-        '644c071dc4fbbccaa64b0b1babcad60395ffce1a7a317a6f5380eff44cbb886be5f29156a8e967ab02b508a33954fcf5602606b43362cc3bb1936a8cfc3a3c07')
-validpgpkeys=(
-  8657ABB260F056B1E5190839D9C4D26D0E604491  # Matt Caswell <matt@openssl.org>
-  7953AC1FBC3DC8B3B292393ED5E9E43F7DF9EE8C  # Richard Levitte <richard@levitte.org>
-  A21FAB74B0088AA361152586B8EF1A6BA9DA2D5C  # Tomáš Mráz <tm@t8m.info>
-)
+        'a44b5ffc35d78925ac7362ec2cf75475d02e05ed0b9e8771c909d090187aaff7436e8d856d58b8a56827990006b813c63318b60a8a7780844c829a2b13a502cf')
 _arch_list=(ARM AARCH64 IA32 X64)
 _build_type=RELEASE
 _build_plugin=GCC5
 
-pkgver() {
-  cd $pkgbase
-  git describe --tags --abbrev=7 | sed 's/^edk2-stable//;s/\([^-]*-g\)/r\1/;s/-/./g'
-}
-
 prepare() {
-  # patch to be able to use brotli 1.0.9
-  patch -Np1 -d $pkgbase -i ../$pkgbase-202202-brotli.patch
+  local submodule
 
   cd $pkgbase
 
   git submodule init
-  git submodule deinit BaseTools/Source/C/BrotliCompress/brotli
-  git submodule deinit CryptoPkg/Library/OpensslLib/openssl
-  git submodule deinit MdeModulePkg/Library/BrotliCustomDecompressLib/brotli
-  git submodule deinit MdeModulePkg/Universal/RegularExpressionDxe/oniguruma
-  git submodule deinit RedfishPkg/Library/JsonLib/jansson
-  git submodule deinit UnitTestFrameworkPkg/Library/CmockaLib/cmocka
-  git submodule deinit UnitTestFrameworkPkg/Library/GoogleTestLib/googletest
-  git config submodule.SoftFloat "$srcdir/$pkgbase-softfloat"
+  git config submodule.CryptoPkg/Library/OpensslLib/openssl.url ../openssl
+  git config submodule.SoftFloat.url ../berkeley-softfloat-3
+  git config submodule.UnitTestFrameworkPkg/Library/CmockaLib/cmocka.url ../$pkgbase-cmocka
+  git config submodule.MdeModulePkg/Universal/RegularExpressionDxe/oniguruma.url ../oniguruma
+  git config submodule.MdeModulePkg/Library/BrotliCustomDecompressLib/brotli.url ../brotli
+  git config submodule.BaseTools/Source/C/BrotliCompress/brotli.url ../brotli
+  git config submodule.RedfishPkg/Library/JsonLib/jansson.url ../jansson
+  git config submodule.UnitTestFrameworkPkg/Library/GoogleTestLib/googletest.url ../googletest
+  # the subhook upstream is gone: https://github.com/tianocore/edk2/issues/6398
+  git submodule deinit UnitTestFrameworkPkg/Library/SubhookLib/subhook
+  # git config submodule.UnitTestFrameworkPkg/Library/SubhookLib/subhook.url ../subhook
+  git config submodule.MdePkg/Library/BaseFdtLib/libfdt.url ../pylibfdt
+  git config submodule.MdePkg/Library/MipiSysTLib/mipisyst.url ../public-mipi-sys-t
+  git config submodule.CryptoPkg/Library/MbedTlsLib/mbedtls.url ../mbedtls
   git -c protocol.file.allow=always submodule update
 
-  # symlinking openssl into place
-  rm -rfv CryptoPkg/Library/OpensslLib/openssl
-  ln -sfv "$srcdir/openssl-$_openssl_ver" CryptoPkg/Library/OpensslLib/openssl
+  # submodule setup for CryptoPkg/Library/OpensslLib/openssl
+  submodule=CryptoPkg/Library/OpensslLib/openssl
+  git -C $submodule submodule init
+  git -C $submodule config submodule.pyca.cryptography.url "$srcdir/pyca-cryptography"
+  git -C $submodule config submodule.krb5.url "$srcdir/krb5"
+  git -C $submodule config submodule.gost-engine.url "$srcdir/gost-engine"
+  git -C $submodule config submodule.wycheproof.url "$srcdir/wycheproof"
+  git -C $submodule -c protocol.file.allow=always submodule update
 
-  # symlinking brotli into place
-  rm -rfv BaseTools/Source/C/BrotliCompress/brotli MdeModulePkg/Library/BrotliCustomDecompressLib/brotli
-  ln -sfv "$srcdir/brotli-$_brotli_ver" BaseTools/Source/C/BrotliCompress/brotli
-  ln -sfv "$srcdir/brotli-$_brotli_ver" MdeModulePkg/Library/BrotliCustomDecompressLib/brotli
+  # submodule setup for CryptoPkg/Library/OpensslLib/openssl/gost-engine
+  submodule=CryptoPkg/Library/OpensslLib/openssl/gost-engine
+  git -C $submodule submodule init
+  git -C $submodule config submodule.libprov.url "$srcdir/libprov"
+  git -C $submodule -c protocol.file.allow=always submodule update
+
+  # submodule setup for MdePkg/Library/MipiSysTLib/mipisyst
+  submodule=MdePkg/Library/MipiSysTLib/mipisyst
+  git -C $submodule submodule init
+  git -C $submodule config submodule.external/pugixml.url "$srcdir/pugixml"
+  git -C $submodule config submodule.external/googletest.url "$srcdir/googletest"
+  git -C $submodule -c protocol.file.allow=always submodule update
 
   # -Werror, not even once
   sed -e 's/ -Werror//g' -i BaseTools/Conf/*.template BaseTools/Source/C/Makefiles/*.makefile
