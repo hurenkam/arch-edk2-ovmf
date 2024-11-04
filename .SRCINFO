@@ -1,7 +1,7 @@
 pkgbase = edk2
 	pkgdesc = Modern, feature-rich firmware development environment for the UEFI specifications
 	pkgver = 202408
-	pkgrel = 1
+	pkgrel = 2
 	url = https://github.com/tianocore/edk2
 	arch = any
 	license = Apache-2.0
