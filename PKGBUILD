@@ -169,6 +169,9 @@ prepare() {
 
   # -Werror, not even once
   sed -e 's/ -Werror//g' -i BaseTools/Conf/*.template BaseTools/Source/C/Makefiles/*.makefile
+
+  #cp /home/hurenkam/Workspace/ezkvm.stable/src/ezkvm.bmp /home/hurenkam/Workspace/edk2/src/edk2/MdeModulePkg/Logo/Logo.bmp
+  cp ../../ezkvm.bmp MdeModulePkg/Logo/Logo.bmp
 }
 
 # TODO: check TPM_ENABLE/TPM2_ENABLE
@@ -190,6 +193,9 @@ build() {
     -D TPM_ENABLE
     -D TPM1_ENABLE
     -D TPM2_ENABLE
+    -DPVSCSI_ENABLE=TRUE
+    -DLSI_SCSI_ENABLE=TRUE
+    -DMPT_SCSI_ENABLE=TRUE
   )
   # network TLS for some targets (all but )
   local _network_tls=(
