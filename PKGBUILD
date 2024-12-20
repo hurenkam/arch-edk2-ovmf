@@ -170,7 +170,6 @@ prepare() {
   # -Werror, not even once
   sed -e 's/ -Werror//g' -i BaseTools/Conf/*.template BaseTools/Source/C/Makefiles/*.makefile
 
-  #cp /home/hurenkam/Workspace/ezkvm.stable/src/ezkvm.bmp /home/hurenkam/Workspace/edk2/src/edk2/MdeModulePkg/Logo/Logo.bmp
   cp ../../ezkvm.bmp MdeModulePkg/Logo/Logo.bmp
 }
 
